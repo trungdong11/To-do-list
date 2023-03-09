@@ -29,122 +29,161 @@
                 </div>
 
                 <!-- container -->
-                <div class="container">
-                    <div class="container__wrapper">
-						<div class="container__item-inner">
-							<div class="container__item-inner-border">
-								<div class="container__item-inner-title">
-									<div class="text">
-										<p>Todo</p>
-									</div>
-									<div
-										class="count-todo"
-										id="todo">
-										<span>3</span>
-									</div>
+				
+				<div class="content">
+					<div class="all-container">
+						<div class="todo-container">
+							<div class="todo-list-header">
+								<span>Todo</span>
+								<div class="todo-list-count">
+									<p id="todo-list-count-text">0</p>
 								</div>
 							</div>
-							<div class="list-todo"></div>
+							<div class="line todo-line"></div>
+							<div  id="todo-list" class="todo-container-list  draggable-container">
+			
+								<!-- <div class="todo-list">
+									<div class="todo-item">
+										<div class="todo-item-header">
+											<span class="todo-item-header-category">maketing</span>
+											<div class="too-item-header-action">
+												<i class="fa-solid fa-pen-to-square edit"></i>
+												<i class="fa-solid fa-trash del"></i>
+											</div>
+										</div>
+										<p class="todo-title">Bán sản phẩm</p>
+										<div class="line-item"></div>
+										<p class="todo-content">
+											Đạt doanh thu
+										</p>
+										<div class="time">
+											<i style="font-size: 13px;" class="fa-regular fa-clock clock"></i>
+										<p class="time-text">5:22</p>
+										</div>
+									</div>
+								</div> -->
+									
+							</div>
+							
+			
+							
 						</div>
-						<div class="container__item-inner">
-							<div class="container__item-inner-border doing">
-								<div class="container__item-inner-title">
-									<div class="text">
-										<p>Doing</p>
-									</div>
-									<div
-										class="count-todo"
-										id="doing">
-										<span>3</span>
-									</div>
+			
+			
+						<div class="todo-container ">
+							<div class="todo-list-header doing">
+								<span>Doing</span>
+								<div class="todo-list-count doing-count">
+									<p id="doing-list-count-text">0</p>
 								</div>
 							</div>
-							<div class="list-todo doing"></div>
+							<div class="line todo-line" style=" background-color: #e1d174;"></div>
+			
+							<div  id="doing-list" class="draggable-container">
+								<!-- <div class="todo-list shallow-draggable">
+									<div class="todo-item">
+										<div class="todo-item-header">
+											<span class="todo-item-header-category">maketing</span>
+											<div class="too-item-header-action">
+												<i class="fa-solid fa-pen-to-square edit"></i>
+												<i class="fa-solid fa-trash del"></i>
+											</div>
+										</div>
+										<p class="todo-title">Bán sản phẩm</p>
+										<div class="line-item"></div>
+										<p class="todo-content">
+											Đạt doanh thu
+										</p>
+										<div class="time">
+											<i style="font-size: 13px;" class="fa-regular fa-clock clock"></i>
+										<p class="time-text">02:22</p>
+										</div>
+									</div>
+				
+								</div> -->
+							</div>
+							
 						</div>
-						<div class="container__item-inner">
-							<div class="container__item-inner-border finished">
-								<div class="container__item-inner-title">
-									<div class="text">
-										<p>Finished</p>
-									</div>
-									<div
-										class="count-todo"
-										id="finished">
-										<span>3</span>
-									</div>
+			
+						
+						<div class="todo-container ">
+							<div class="todo-list-header done">
+								<span>Finish</span>
+								<div class="todo-list-count done-count">
+									<p id="done-list-count-text">0</p>
 								</div>
 							</div>
-							<div class="list-todo finished"></div>
+							<div class="line todo-line" style="background-color: #3cc057;"></div>
+							<div  id="done-list" class="draggable-container">
+								<!-- <div class="todo-list">
+									<div class="todo-item">
+										<div class="todo-item-header">
+											<span class="todo-item-header-category">maketing</span>
+											<div class="too-item-header-action">
+												<i class="fa-solid fa-pen-to-square edit"></i>
+												<i class="fa-solid fa-trash del"></i>
+											</div>
+										</div>
+										<p class="todo-title">Đạt doanh thu</p>
+										<div class="line-item"></div>
+										<p class="todo-content">
+										  Bán hàng
+										</p>
+										<div class="time">
+											<i style="font-size: 13px;" class="fa-regular fa-clock clock"></i>
+										<p class="time-text">05:22</p>
+										</div>
+									</div>
+								</div> -->
+							</div>
+							
+						</div>
+			
+					</div>
+					<div class="form disable" id="form-input">
+						<div class="input-bg" onclick="closeInput()"></div>
+						<div class="form-content-container">
+							<div class="form-content">
+								<p class="input-title">Add new todo</p>
+								<input placeholder="Category" type="text"  id="category" required class="input">
+								<input placeholder="Title" type="text"  id="title" required class="input">
+								<textarea
+									id="content"
+									cols="30"
+									rows="10"
+									class="input input-content"
+									placeholder="Content">
+								</textarea>
+								<button id="add-todo" type="submit">submit</button>
+								<span class="close" id="close-form-input">x</span>
+							</div>
 						</div>
 					</div>
-                </div>
-
-                <div class="overlay"></div>
-			<div class="task-form">
-				<h1 class="title">Add new todo</h1>
-				<form action="">
-					<div class="form-group">
-						<input
-							id="input__element"
-							type="text"
-							placeholder="Category Etc : Marketing"
-							name="category" />
-					</div>
-					<div class="form-group">
-						<input
-							id="input__element"
-							type="text"
-							placeholder="Title"
-							name="title" />
-					</div>
-					<div class="form-group">
-						<textarea
-							id="input__element"
-							name="content"
-							id=""
-							cols="30"
-							rows="10"
-							placeholder="Content"></textarea>
-					</div>
-					<div class="status">
-						<div class="status-item">
-							<input
-								type="radio"
-								id="Todo"
-								name="status"
-								value="TODO_TYPE" />
-							<label for="Todo">Todo</label>
-							<br />
-						</div>
-						<div class="status-item">
-							<input
-								type="radio"
-								id="Doing"
-								name="status"
-								value="TODO_DOING_TYPE" />
-							<label for="Doing">Doing</label>
-							<br />
-						</div>
-						<div class="status-item">
-							<input
-								type="radio"
-								id="Finished"
-								name="status"
-								value="TODO_FINISHED_TYPE" />
-							<label for="Finished">Finished</label>
-							<br />
+					<div class="form disable" id="form-edit">
+						<div class="input-bg" onclick="closeEdit()"></div>
+						<div class="form-content-container">
+							<div class="form-content">
+								<p class="input-title">Add new todo</p>
+							<input placeholder="Category" type="text"  id="category-edit" required class="input">
+							<input placeholder="Title" type="text"  id="title-edit" required class="input">
+							<textarea
+									id="content-edit"
+									cols="30"
+									rows="10"
+									class="input input-content"
+									placeholder="Content">
+							</textarea>
+							<div class="combo">
+								<div class="checkbox"><input type="checkbox" value="todo" name="todo" class="choosetype" onchange="choose(0)"> <label for="todo">To do</label></div>
+							<div class="checkbox"><input type="checkbox" value="doing" name="doing" class="choosetype" onchange="choose(1)"><label for="doing">Doing</label></div>
+							<div class="checkbox"><input type="checkbox" value="done" name="done" class="choosetype" onchange="choose(2)"><label for="done">Done</label></div>
+							</div>
+							<button id="add-todo-edit" type="submit">submit</button>
+							<span class="close" id="close-form-edit">x</span>
+							</div>
 						</div>
 					</div>
-					<button
-						type="submit"
-						class="btn-submit" style="cursor:pointer"> 
-						Submit
-					</button>
-				</form>
-				<div class="icon-close">
-					<i class="fa-solid fa-xmark"></i>
 				</div>
-			</div>
 
             </div>
         </div>
@@ -152,7 +191,7 @@
 
     </div>
 
-    <script src="./assets/js/main.js"></script>
+    <script src="./assets/js/main1.js"></script>
     
 </body>
 </html>
