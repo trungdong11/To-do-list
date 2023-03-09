@@ -13,25 +13,11 @@ const closeFormInput = document.getElementById('close-form-input');
 
 let data = [
 	{
-		category:"todo",
-		title: "Hoc tu vung",
-		content: "Hoc tu vung",
-		date: '2023-10-11',
-		type: 'todo'
-	},
-	{
-		category:"todo",
-		title: "Hoc tu vung",
-		content: "Hoc tu vung",
-		date: '2023-10-11',
-		type: 'doing'
-	},
-	{
-		category:"todo",
-		title: "Hoc tu vung",
-		content: "Hoc tu vung",
-		date: '2023-10-11',
-		type: 'done'
+		category:"",
+		title: "",
+		content: "",
+		date: "",
+		type: ""
 	}
 ]
 
