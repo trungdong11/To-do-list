@@ -1,87 +1,291 @@
-const inputsForm = document.querySelectorAll('#input__element')
-const formTodoElement = document.querySelector('.task-form')
-const overlayElement = document.querySelector('.overlay')
 const btnOpenNewTask = document.querySelector('.new__task')
-const iconClose = document.querySelector('.icon-close')
-const titleForm = document.querySelector('.task-form .title')
-const btnSubmitForm = document.querySelector('.task-form .btn-submit')
-const status = document.querySelector('.status')
-const btnSubmit = document.querySelector('.btn-submit')
-const listTodoElement = document.querySelector('.list-todo')
-const listTodoDoingElement = document.querySelector('.list-todo.doing')
-const listTodoFinishedElemnt = document.querySelector('.list-todo.finished')
-const statusTodo = document.querySelectorAll('input[name=status]')
+const formInput  = document.getElementById('form-input');
+const formEdit = document.getElementById('form-edit');
+const countTodo = document.getElementById('todo-list-count-text');
+const countDoing = document.getElementById('doing-list-count-text');
+const countDone = document.getElementById('done-list-count-text');
+const closeFormEdit = document.getElementById('close-form-edit');
+const addItem = document.getElementById('add-todo');
+const ToDo = document.getElementById('todo-list');
+const Doing = document.getElementById('doing-list');
+const Done = document.getElementById('done-list');
+const closeFormInput = document.getElementById('close-form-input');
 
+let data = [
+	{
+		category:"",
+		title: "",
+		content: "",
+		date: "",
+		type: ""
+	}
+]
 
-let isEdit = false
-
-let todos = JSON.parse(localStorage.getItem('todos')) || []
-let todo = {
-    id: '',
-    category: '',
-    title: '',
-    content: '',
-    status: '',
-    date: '',
-}
-
-const TODO_TYPE = 'TODO_TYPE'
-const TODO_DOING_TYPE = 'TODO_DOING_TYPE'
-const TODO_FINISHED_TYPE = 'TODO_FINISHED_TYPE'
-
-const callAPI = async (url, method, data = null) => {
-    const parameter = {
-        method,
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        ...(method !== 'DELETE' && {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }),
-
-        ...(method !== 'GET' && { body: JSON.stringify(data) }),
-    }
-
-    const done = await fetch(url, parameter)
-    const result = await done.json()
-    return result;
-}
-
-const handleChangeInput = (e) => {
-    const parentElement = e.target.parentElement
-    todo[e.target.name] = e.target.value
-
-    if (!e.target.value) {
-        parentElement.style.borderColor = 'black'
-    } else {
-        parentElement.style.borderColor = '#00e64d'
-    }
-}
-inputsForm.forEach((inputItem) => {
-    inputItem.addEventListener('change', handleChangeInput)
+btnOpenNewTask.addEventListener('click', function() {
+    formInput.classList.add('enable');
+	// addItem = document.getElementById('add-todo');	
 })
 
-const validTodo = () => {
-    let count = 0
-    inputsForm.forEach((inputItem) => {
-        if (inputItem.value == '') {
-            const parentElement = inputItem.parentElement
-            parentElement.style.borderColor = 'red'
-            count += 1
-        }
-    })
-    return !count ? true : false
+closeFormInput.addEventListener('click', function() {
+    formInput.classList.remove('enable');
+})
+
+if (localStorage.getItem('todo') == null) {
+	localStorage.setItem('todo', JSON.stringify(data));
+} else {
+	data = JSON.parse(localStorage.getItem('todo'));
 }
 
-// const clearFormTodoValue = () => {
-//     inputsForm.forEach((inputItem) => {
-//         const parentElement = inputItem.parentElement
-//         inputItem.value = ''
-//         parentElement.style.borderColor = 'black'
-//     })
-// }
+
+addItem.addEventListener('click', function() {
+	let category = document.getElementById('category').value;
+	let title = document.getElementById('title').value;
+	let content = document.getElementById('content').value;
+    let date = getCurrentDate();
+	
+	if( title  != '' && document.getElementById('title').classList.contains('error')) {
+		document.getElementById('title').classList.remove('error');
+	} else if(title == '') document.getElementById('title').classList.add('error');
+
+	if( content  != '' && document.getElementById('content').classList.contains('error')) {
+		document.getElementById('content').classList.remove('error');
+	}   else if(content == '')  document.getElementById('content').classList.add('error');
+
+	if( category  != '' && document.getElementById('category').classList.contains('error')) {
+		document.getElementById('category').classList.remove('error');
+	}   else if(category == '')  document.getElementById('category').classList.add('error');
+
+	if( title != '' && content != '' && date != '' && category != '') {
+		let todo = {
+			category: category,
+			title: title,
+			content: content,
+			date: date,
+			type: 'todo'
+		}
+		data.push(todo);
+		// console.log(data);
+		formInput.classList.remove('enable');
+		pushTodo();
+		localStorage.setItem('todo', JSON.stringify(data));
+	}
+})
+
+let currentEdit = 0;
+//get element type checkbox input
+let checkbox = document.querySelectorAll('.choosetype');
+pushTodo();
+
+let btnSubmitEdit = document.getElementById('add-todo-edit');
+btnSubmitEdit.addEventListener('click',function(){
+	let title = document.getElementById('title-edit').value;
+	let content = document.getElementById('content-edit').value;
+	let date =  getCurrentDate()
+	let category = document.getElementById('category-edit').value;
+	let type = '';
+	for(var i =0 ; i < checkbox.length; i++){
+		if(checkbox[i].checked == true) type = checkbox[i].value;
+	}
+	if( title  != '' && document.getElementById('title-edit').classList.contains('error')) {
+		document.getElementById('title-edit').classList.remove('error');
+	} else if(title == '') document.getElementById('title-edit').classList.add('error');
+
+	if( content  != '' && document.getElementById('content-edit').classList.contains('error')) {
+		document.getElementById('content-edit').classList.remove('error');
+	}   else if(content == '')  document.getElementById('content-edit').classList.add('error');
+
+	if( category  != '' && document.getElementById('category-edit').classList.contains('error')) {
+		document.getElementById('category-edit').classList.remove('error');
+	}   else if(category == '')  document.getElementById('category-edit').classList.add('error');
+
+	if( title != '' && content != '' && date != '' && category != '') {
+		let todo = {
+			category: category,
+			title: title,
+			content: content,
+			date: date,
+			type: type
+		}
+		data[currentEdit] = todo;
+		// console.log(data);
+		formEdit.classList.remove('enable');
+		pushTodo();
+		localStorage.setItem('todo',JSON.stringify(data));
+
+	}
+})
+
+closeFormEdit.addEventListener('click', function() {
+    formEdit.classList.remove('enable');
+})
+
+const draggbles = document.querySelectorAll(".shallow-draggable")
+const containers = document.querySelectorAll(".draggable-container")
+
+draggbles.forEach((draggble) => {
+	//for start dragging costing opacity
+	draggble.addEventListener("dragstart", () => {
+		draggble.classList.add("dragging")
+	})
+
+	//for end the dragging opacity costing
+	draggble.addEventListener("dragend", () => {
+		draggble.classList.remove("dragging")
+	})
+})
+containers.forEach((container) => {
+	container.addEventListener("dragover", function (e) {
+		e.preventDefault()
+		const afterElement = dragAfterElement(container, e.clientY)
+		const dragging = document.querySelector(".dragging")
+		if (afterElement == null) {
+			container.appendChild(dragging)
+		} else {
+			container.insertBefore(dragging, afterElement)
+		}
+	})
+})
+
+function pushTodo(){
+	let x=0;y=0;z =0;
+	ToDo.innerHTML = '';
+	Doing.innerHTML = '';
+	Done.innerHTML = '';
+	data.forEach(function(item,index) {
+	if(item.type == 'todo'){
+		x++;
+		ToDo.innerHTML += 
+		`<div class="todo-list shallow-draggable" draggable="true" id="${index}">
+		<div class="todo-item">
+		<div class="todo-item-header">
+			<span class="todo-item-header-category">${item.category}</span>
+			<div class="too-item-header-action">
+                <i class="fa-solid fa-pen-to-square edit" onclick="editItem(${index})"></i>
+				<i class="fa-solid fa-trash del" onclick="remove(${index})"></i>
+			</div>
+		</div>
+		<p class="todo-title">${item.title}</p>
+		<div class="line-item"></div>
+		<p class="todo-content">
+			${item.content}
+		</p>
+		<div class="time">
+        <i style="font-size: 13px;" class="fa-regular fa-clock clock"></i>
+		<p class="time-text">${item.date}</p>
+		</div>
+	</div>
+	</div>`;
+	countTodo.innerHTML = x;
+	} else if (item.type == 'doing'){
+		y++;
+		Doing.innerHTML += 
+		`<div class="todo-list shallow-draggable" draggable="true" id="${index}">
+		<div class="todo-item">
+		<div class="todo-item-header">
+			<span class="todo-item-header-category">${item.category}</span>
+			<div class="too-item-header-action">
+				<i class="fa-solid fa-pen-to-square edit" onclick="editItem(${index})"></i>
+				<i class="fa-solid fa-trash del" onclick="remove(${index})"></i>
+			</div>
+		</div>
+		<p class="todo-title">${item.title}</p>
+		<div class="line-item"></div>
+		<p class="todo-content">
+			${item.content}
+		</p>
+		<div class="time">
+        <i style="font-size: 13px;" class="fa-regular fa-clock clock"></i>
+		<p class="time-text">${item.date}</p>
+		</div>
+	</div>
+	</div>`
+	countDoing.innerHTML = y;
+	} else {
+		z++;
+		Done.innerHTML += `
+		<div class="todo-list shallow-draggable" draggable="true" id="${index}">
+		<div class="todo-item">
+                        <div class="todo-item-header">
+                            <span class="todo-item-header-category">${item.category}</span>
+                            <div class="too-item-header-action">
+                            <i class="fa-solid fa-pen-to-square edit" onclick="editItem(${index})"></i>
+                            <i class="fa-solid fa-trash del" onclick="remove(${index})"></i>
+                            </div>
+                        </div>
+                        <p class="todo-title">${item.title}</p>
+                        <div class="line-item"></div>
+                        <p class="todo-content">
+                            ${item.content}
+                        </p>
+                        <div class="time">
+                        <i style="font-size: 13px;" class="fa-regular fa-clock clock"></i>
+                        <p class="time-text">21:22</p>
+                        </div>
+                    </div>
+					</div>`
+					countDone.innerHTML = z;
+	}
+})
+};
+
+function editItem(obj){
+	currentEdit = obj;
+	formEdit.classList.add('enable');
+	// console.log(data[obj].title);
+	document.getElementById('title-edit').value = data[obj].title;
+	document.getElementById('content-edit').value = data[obj].content;
+	document.getElementById('category-edit').value = data[obj].category;
+	switch(data[obj].type){
+		case 'todo':
+			choose(0);
+			break;
+		case 'doing':
+			choose(1);
+			break;
+		case 'done':
+			choose(2);
+			break;
+	}
+	// console.log(data[0]);
+}
+
+function choose(val){
+	for(var i =0 ; i < checkbox.length; i++){
+			checkbox[i].checked = false;
+	}
+	checkbox[val].checked = true;
+}
+
+function dragAfterElement(container, y) {
+	const draggbleElements = [...container.querySelectorAll(".shallow-draggable:not(.dragging)")]
+
+	return draggbleElements.reduce(
+		(closest, child) => {
+			const box = child.getBoundingClientRect()
+			const offset = y - box.top - box.height / 2
+			if (offset < 0 && offset > closest.offset) {
+				return { offset: offset, element: child }
+			} else {
+				return closest
+			}
+		},
+		{ offset: Number.NEGATIVE_INFINITY }
+	).element
+}
+
+function closeInput(){
+	console.log('close');
+	formInput.classList.remove('enable');
+}
+function closeEdit(){
+	formEdit.classList.remove('enable');
+}
+
+function remove(val){
+	data.splice(val,1);
+	pushTodo();
+	localStorage.setItem('todo',JSON.stringify(data));
+}
 
 const getCurrentDate = () => {
     let today = new Date()
@@ -93,176 +297,5 @@ const getCurrentDate = () => {
     return today
 }
 
-const generateTodoHTML = (todolist) => {
-    return ` 
-        <div class="container__card">
-            <p class="container__card-category">${todolist.category}</p>
-            <h2 class="title">
-                ${todolist.title}
-            </h2>
-            <p class="description">
-                ${todolist.content}
-            </p>
-            <p class="date">
-                <i class="fas fa-clock"></i>
-                ${todolist.date}
-            </p>
-            <div class="container__card-action" >
-                <i class="fas fa-edit" onclick="handleEdit(${todolist.id})"></i>
-                <i class="fas fa-trash-alt" onclick="handleDelete(${todo.id})"></i>
-            </div>
-        </div>
-    `
-}
-
-const handleEdit = (id) => {
-    displayForm(true)
-    isEdit = true
-
-    titleForm.innerText = 'Edit Todo'
-    btnSubmitForm.innerText = 'Edit'
-    status.style.display = 'flex'
-    const todoFinded = todos.find((todo) => todo.id == id)
-    todo = todoFinded
-    inputsForm.forEach((inputForm) => {
-        inputForm.value = todoFinded[inputForm.name]
-    })
-    statusTodo.forEach((st) => {
-        if (st.value == todoFinded.status) {
-            st.checked = true
-        }
-    })
-}
-
-const handleDelete = async (id) => {
-    try {
-        await callAPI(
-            `https://637b954d10a6f23f7fad790a.mockapi.io/todo/${id}`,
-            'DELETE'
-        )
-        todos = todos.filter((todo) => todo.id != id)
-        localStorage.setItem('todos', JSON.stringify(todos))
-        render()
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-const render = () => {
-    let htmlTodos = ''
-    let htmlTodosDoing = ''
-    let htmlTodosFinished = ''
-
-    todos.forEach((todo) => {
-        switch (todo.status) {
-            case TODO_TYPE: {
-                htmlTodos += generateTodoHTML(todo)
-                
-                break
-            }
-            case TODO_DOING_TYPE: {
-                htmlTodosDoing += generateTodoHTML(todo)
-                
-
-                break
-            }
-            case TODO_FINISHED_TYPE: {
-                htmlTodosFinished += generateTodoHTML(todo)
-                
-                break
-            }
-        }
-    })
-    listTodoElement.innerHTML = htmlTodos
-    listTodoDoingElement.innerHTML = htmlTodosDoing
-    listTodoFinishedElemnt.innerHTML = htmlTodosFinished
 
 
-}
-
-const addTodo = async () => {
-    const newTodo = {
-        ...todo,
-        id: Math.random(),
-        status: TODO_TYPE,
-        date: getCurrentDate(),
-    }
-
-    try {
-        const data = await callAPI(
-            'https://63f1c676aab7d09125fb305f.mockapi.io/todo',
-            'POST',
-            newTodo
-        )
-        todos.push(data)
-        localStorage.setItem('todos', JSON.stringify(todos))
-        render()
-        clearFormTodoValue()
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-const updateTodo = async () => {
-    let valueStatus = ''
-    statusTodo.forEach((st) => {
-        if (st.checked) {
-            valueStatus = st.value
-        }
-    })
-    const todoUpadte = { ...todo, status: valueStatus }
-    try {
-        const data = await callAPI(
-            `https://63f1c676aab7d09125fb305f.mockapi.io/todo/${todoUpadte.id}`,
-            'PUT',
-            todoUpadte
-        )
-        todos = todos.map((it) => (it.id == data.id ? data : it))
-        localStorage.setItem('todos', JSON.stringify(todos))
-        render()
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-btnSubmit.addEventListener('click', async (e) => {
-    e.preventDefault()
-    if (validTodo()) {
-        if (isEdit) {
-            updateTodo()
-        } else {
-            addTodo()
-        }
-    } else {
-        console.log('error')
-    }
-})
-
-const clearFormTodoValue = () => {
-    inputsForm.forEach((inputItem) => {
-        const parentElement = inputItem;
-        inputItem.value = ''
-        parentElement.style.borderColor = 'black'
-    })
-}
-
-const displayForm = (status) => {
-    formTodoElement.style.display = status ? 'block' : 'none'
-    overlayElement.style.display = status ? 'block' : 'none'
-}
-
-btnOpenNewTask.addEventListener('click', () => {
-    displayForm(true)
-})
-
-iconClose.addEventListener('click', () => {
-    displayForm(false)
-    if (isEdit) {
-        isEdit = false
-        titleForm.innerText = 'Add New Todo'
-        btnSubmitForm.innerText = 'Submit'
-        // status.style.display = 'none'   
-        clearFormTodoValue()
-    }
-})
-render();
